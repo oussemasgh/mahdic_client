@@ -9,16 +9,15 @@ import {
 } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
-import { fetchCameras, clearErrors } from '../../../../data/slice/CameraSlice';
+import { fetchCameras, clearErrors,createCamera } from '../../../../data/slice/CameraSlice';
 import axiosInstance from 'src/utils/axios';
 import AddIcon from '@mui/icons-material/Add';
+
 
 export default function CamerasPage() {
   
   const [scanResults, setScanResults] = useState([]);
   const dispatch = useDispatch();
- 
-  const { cameras, loading, error } = useSelector((state) => state.camera);
   const ScanCamera = async () => {
       axiosInstance.get('/camera-scanner')
       .then((response) => {
@@ -30,10 +29,29 @@ export default function CamerasPage() {
       });
 
   };
-
-
+  const [cameraData, setCameraData] = useState({
+    name: '',
+    description: '',
+    url: '',
+    status: '',
+    resolution: '',
+    fps: '',
+    ip_Address: '',
+  });
+  
   const handleButtonClick = (camera) => {
-    console.log(camera);
+    const newCameraData = {
+      name: camera.cameraName,
+      description: '',
+      url: "http://localhost:8889/cam/whep",
+      status: 'active',
+      resolution: camera.extractedValues.resolution,
+      fps: camera.extractedValues.fps,
+      ip_Address: camera.extractedValues.ip_Adrress,
+    };
+  
+    dispatch(createCamera(newCameraData));
+    console.log(newCameraData);
   };
 
   return (
@@ -60,6 +78,7 @@ export default function CamerasPage() {
               <Grid item xs={12} sm={6} md={4} key={camera.extractedValues.id}>
                 <Paper sx={{ p: 2, position: 'relative' }}>
                   <Button
+                  href={'/dashboard/room'}
                     variant="contained"
                     
                     startIcon={<AddIcon />}

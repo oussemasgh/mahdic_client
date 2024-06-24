@@ -16,16 +16,27 @@ const navConfig = [
     path: "/dashboard/app",
     icon: icon("ic_analytics"),
   },
+
+  {
+    title: "Monitors",
+    path: "room/monitor",
+    icon: icon("ic_lock"),
+  },
+
+
+  {
+    title: "cameras",
+        path: "/dashboard/camera",
+    icon: icon("ic_blog"),
+      },
+      
+
   {
     title: "user",
     path: "/dashboard/user",
     icon: icon("ic_user"),
   },
-      {
-    title: "cameras",
-        path: "/dashboard/room",
-    icon: icon("ic_blog"),
-      },
+      
   {
     title: "Videos",
     path: "/dashboard/products",

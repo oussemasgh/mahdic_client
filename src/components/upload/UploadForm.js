@@ -13,8 +13,11 @@ const UploadForm = () => {
   const [nameError, setNameError] = useState(false);
 
   const handleDrop = (acceptedFiles) => {
-    setVideos(acceptedFiles);
-    setVideoPreviews(acceptedFiles.map(file => URL.createObjectURL(file)));
+    setVideos((prevVideos) => [...prevVideos, ...acceptedFiles]);
+    setVideoPreviews((prevPreviews) => [
+      ...prevPreviews,
+      ...acceptedFiles.map(file => URL.createObjectURL(file))
+    ]);
   };
 
   const handleSubmit = (e) => {

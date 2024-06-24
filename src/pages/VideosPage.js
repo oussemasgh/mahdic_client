@@ -32,8 +32,9 @@ import { fetchCameras, clearErrors, deleteCamera, createCamera } from '../data/s
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', alignRight: false },
-  { id: 'description', label: 'Description', alignRight: false },
-  { id: 'numberOfCameras', label: 'Number of Cameras', alignRight: false },
+  { id: 'resolution', label: 'Resolution', alignRight: false },
+  {id: 'ip_Address', label: 'IP Address', alignRight: false },
+  { id: 'url', label: 'Url', alignRight: false },
   { id: '' },
 ];
 
@@ -49,7 +50,7 @@ export default function CameraPage() {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { cameras, loading, error } = useSelector((state) => state.camera);
+  const { cameras, loading, error } = useSelector((state) => state.cameras);
 
 
 
@@ -110,6 +111,7 @@ export default function CameraPage() {
 
   const handleOpenMenu = (event, cameraId) => {
     setAnchorEl(event.currentTarget);
+    console.log(cameraId);
     setOpen((prev) => (prev === cameraId ? null : cameraId));
   };
 
@@ -151,7 +153,7 @@ export default function CameraPage() {
                 />
                 <TableBody>
                   {filteredCameras.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((camera) => (
-                    <TableRow hover key={camera.id} tabIndex={-1} role="checkbox">
+                    <TableRow hover key={camera._id} tabIndex={-1} role="checkbox">
                       <TableCell padding="checkbox">
                         <Checkbox checked={selected.indexOf(camera.name) !== -1} onChange={() => {}} />
                       </TableCell>
@@ -163,22 +165,22 @@ export default function CameraPage() {
                           </Typography>
                         </Stack>
                       </TableCell>
-                      <TableCell align="left">{camera.description}</TableCell>
-                      <TableCell align="left">{camera.numberOfCameras}</TableCell>
+                      <TableCell align="left">{camera.resolution}</TableCell>
+                      <TableCell align="left">{camera.ip_Address}</TableCell>
+                      <TableCell align="left">{camera.url}</TableCell>
                       <TableCell align="right">
-                        <IconButton size="large" color="inherit" onClick={(event) => handleOpenMenu(event, camera.id)}>
+                        <IconButton size="large" color="inherit" onClick={(event) => handleOpenMenu(event, camera._id)}>
                           <Iconify icon={'eva:more-vertical-fill'} />
                         </IconButton>
                         <Popover
-                          open={open === camera.id}
+                          open={open === camera._id}
                           anchorEl={anchorEl}
                           onClose={handleCloseMenu}
                           anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
                           transformOrigin={{ vertical: 'top', horizontal: 'right' }}
                         >
                           <Stack direction="row" spacing={2} p={2}>
-                            <MenuItem onClick={() => editCamera(camera.id)}>Edit</MenuItem>
-                            <MenuItem onClick={() => handleDeleteCamera(camera.id)}>Delete</MenuItem>
+                            <MenuItem onClick={() => handleDeleteCamera(camera._id)}>Delete</MenuItem>
                           </Stack>
                         </Popover>
                       </TableCell>

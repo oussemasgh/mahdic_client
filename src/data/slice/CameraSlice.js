@@ -3,12 +3,22 @@ import axiosInstance from "../../utils/axios";
 
 const initialState = {
   cameras: [],
+  activeCameras: [],
   camera: null,
   loading: false,
   error: null,
 };
 
 export const fetchCameras = createAsyncThunk("cameras/fetchCameras", async () => {
+  try {
+    const response = await axiosInstance.get('/cameras/');
+    return response.data;
+  } catch (error) {
+    return Promise.reject(error.message);
+  }
+});
+
+export const fetchActiveCameras = createAsyncThunk("cameras/fetchActiveCameras", async () => {
   try {
     const response = await axiosInstance.get('/cameras/');
     return response.data;
@@ -72,6 +82,18 @@ export const cameraSlice = createSlice({
         state.cameras = action.payload;
       })
       .addCase(fetchCameras.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
+      .addCase(fetchActiveCameras.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchActiveCameras.fulfilled, (state, action) => {
+        state.loading = false;
+        state.activeCameras = action.payload;
+      })
+      .addCase(fetchActiveCameras.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
       })

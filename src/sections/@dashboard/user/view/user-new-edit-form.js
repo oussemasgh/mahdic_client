@@ -74,9 +74,7 @@ const dispatch = useDispatch();
 
             {currentUser && (
               <Stack justifyContent="center" alignItems="center" sx={{ mt: 3 }}>
-                <Button variant="soft" color="error">
-                  Delete User
-                </Button>
+                
               </Stack>
             )}
           </Card>

@@ -31,7 +31,7 @@ export default function Router() {
         { element: <Navigate to="/dashboard/app" />, index: true },
         { path: "app", element: <DashboardAppPage /> },
         { path: "user", element: <UserPage /> },
-        { path: "room", element: <VideosPage /> },
+        { path: "camera", element: <VideosPage /> },
         {path: "room/new", element: <RoomCreatePage />},
         { path: "edit/:id", element: <UserUpdatePage /> },
         { path: 'user/new', element: <UserCreatePage /> },

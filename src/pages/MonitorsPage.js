@@ -1,27 +1,22 @@
-import React, { useState } from 'react';
-import { Button, Container, MenuItem, Popover, Stack, Typography } from '@mui/material';
-import Iconify from 'src/components/iconify/Iconify';
-import axios from 'axios';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Container, Stack, Typography, Box } from '@mui/material';
 import VideoPlayer from '../components/VideoPlayer/VideoPlayer'; // Adjust the path as needed
+import { fetchCameras, fetchActiveCameras } from '../data/slice/CameraSlice'; // Adjust the path as needed
 
 const MonitorsPage = () => {
-  const [open, setOpen] = useState(null);
-  const [scanResults, setScanResults] = useState([]);
-  const [anchorEl, setAnchorEl] = useState(null);
-  
-  const handleScanForCameras = async (event) => {
-    setAnchorEl(event.currentTarget);
-    try {
-      const response = await axios.get(''); // Replace with your API endpoint
-      setScanResults(response.data);
-      setOpen(true);
-    } catch (error) {
-      console.error('Error scanning for cameras:', error);
-    }
-  };
+  const dispatch = useDispatch();
+  const cameras = useSelector((state) => state.cameras.cameras);
+  const activeCameras = useSelector((state) => state.cameras.activeCameras);
 
-  const mainVideoUrl = 'http://localhost:8889/cam/whep'; // Example main video URL
-  const sideVideoUrl = 'http://localhost:8889/cam/whep'; // Example side video URL
+  useEffect(() => {
+    dispatch(fetchCameras());
+    dispatch(fetchActiveCameras());
+  }, [dispatch]);
+
+  if (!cameras) {
+    return <div>Loading cameras...</div>;
+  }
 
   return (
     <Container>
@@ -29,57 +24,34 @@ const MonitorsPage = () => {
         <Typography variant="h4" gutterBottom>
           Monitors
         </Typography>
-        <Button
-          variant="contained"
-          startIcon={<Iconify icon="eva:plus-fill" />}
-          onClick={handleScanForCameras}
-        >
-          Scan for available cameras
-        </Button>
       </Stack>
-
-      <div style={{ display: 'flex', flexDirection: 'row', gap: '20px', marginTop: '20px' }}>
-        <VideoPlayer url={mainVideoUrl} isMainPlayer={true} />
-        <VideoPlayer url={sideVideoUrl} isMainPlayer={false} />
-      </div>
-
-      <Popover
-        open={Boolean(anchorEl)}
-        anchorEl={anchorEl}
-        onClose={() => setAnchorEl(null)}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'center',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'center',
-        }}
-        PaperProps={{
-          sx: {
-            p: 2,
-            minWidth: 350,
-            maxWidth: 600,
-            '& .MuiMenuItem-root': {
-              px: 1,
-              typography: 'body2',
-              borderRadius: 0.75,
-            },
-          },
+      <Box
+        sx={{
+          display: 'flex',
+          height: '70vh', // Set a specific height for the container
         }}
       >
-        {scanResults.length > 0 ? (
-          scanResults.map((camera, index) => (
-            <MenuItem key={camera.id}>
-              Camera - {index}
-            </MenuItem>
-          ))
-        ) : (
-          <MenuItem>No cameras found</MenuItem>
-        )}
-      </Popover>
+        {activeCameras.map((camera, index) => (
+          <Box
+            key={camera._id}
+            sx={{
+              flex: index === 0 ? 3 : 1,
+              marginRight: index === activeCameras.length - 1 ? 0 : '10px',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              backgroundColor: '#000',
+            }}
+          >
+            <Box sx={{ width: '100%', height: '32%', mb: '5px' }}>
+              <VideoPlayer url={camera.url} />
+            </Box>
+          </Box>
+        ))}
+      </Box>
     </Container>
   );
 };
 
-export default MonitorsPage;
+export default MonitorsPage; 
